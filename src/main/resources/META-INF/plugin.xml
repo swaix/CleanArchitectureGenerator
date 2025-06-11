@@ -1,0 +1,22 @@
+<idea-plugin>
+    <id>swaix.dev.plugin.cleanarchitecturegenerator</id>
+    <name>Clean Architecture Feature Generator</name>
+    <vendor>SwaixDev</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <resource-bundle>messages.PluginMessages</resource-bundle>
+
+    <idea-version since-build="243" until-build="243.*"/>
+
+    <actions>
+        <action id="CleanArchitectureGenerator.CreateNewFeature"
+                class="swaix.dev.plugin.cleanarchitecturegenerator.CreateCleanFeatureAction"
+                text="Clean Architecture Feature"
+                description="Crea una nuova feature seguendo la Clean Architecture.">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
+        </action>
+    </actions>
+</idea-plugin>
