@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 import ${rootPackageName}.${featureNameLowerCase}.data.model.${featureName}Dto
 import ${rootPackageName}.${featureNameLowerCase}.domain.model.${featureName}
 

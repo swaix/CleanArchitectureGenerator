@@ -1,16 +1,17 @@
 package swaix.dev.plugin.cleanarchitecturegenerator
 
+import com.intellij.lang.Language
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.fileTypes.FileTypeManager
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
-import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileFactory
-import org.jetbrains.kotlin.idea.KotlinLanguage
 import java.text.MessageFormat
 import java.util.*
 
@@ -21,27 +22,25 @@ class CreateCleanFeatureAction : AnAction() {
         val currentDirectory = e.getData(CommonDataKeys.PSI_ELEMENT) as? PsiDirectory ?: return
         val bundle = ResourceBundle.getBundle("messages.PluginMessages")
 
-        // Usa il nostro Dialog personalizzato
-        val dialog = FeatureDialog(project)
+        val dialog = GeneratorDialog(project)
         if (!dialog.showAndGet()) return
 
         val featureName = dialog.featureName
         val diFramework = dialog.selectedFramework
+        val navLibrary = dialog.selectedNavigation
         if (featureName.isBlank()) return
 
-        val rootPackage = currentDirectory.getPackage()?.qualifiedName
+        val rootPackage = (e.getData(CommonDataKeys.PSI_ELEMENT) as? PsiDirectory)?.let {
+            com.intellij.psi.JavaDirectoryService.getInstance().getPackage(it)?.qualifiedName
+        }
         if (rootPackage.isNullOrBlank()) {
             Messages.showErrorDialog(project, "Impossibile determinare il package della cartella selezionata.", bundle.getString("error.title"))
             return
         }
 
-        val capitalizedFeatureName = featureName.replaceFirstChar { it.uppercase() }
-        val featurePackageName = featureName.lowercase()
-
         WriteCommandAction.runWriteCommandAction(project) {
             try {
-                // Struttura cartelle
-                val featureDir = currentDirectory.createSubdirectory(featurePackageName)
+                val featureDir = currentDirectory.createSubdirectory(featureName.lowercase())
                 val presentationDir = featureDir.createSubdirectory("presentation")
                 val presentationDiDir = presentationDir.createSubdirectory("di")
                 val domainDir = featureDir.createSubdirectory("domain")
@@ -55,21 +54,32 @@ class CreateCleanFeatureAction : AnAction() {
                 val dataMappersDir = dataDir.createSubdirectory("mappers")
                 val dataDiDir = dataDir.createSubdirectory("di")
 
-                // Prepara le proprietà per i template
+                val capitalizedFeatureName = featureName.replaceFirstChar { it.uppercase() }
+                val featurePackageName = featureName.lowercase()
+
                 val templateProperties = Properties().apply {
                     setProperty("featureName", capitalizedFeatureName)
                     setProperty("featureNameLowerCase", featurePackageName)
                     setProperty("rootPackageName", rootPackage)
 
-                    setProperty("hiltViewModelAnnotation", if (diFramework == DiFramework.HILT) "@HiltViewModel" else "")
-                    setProperty("injectAnnotation", if (diFramework == DiFramework.HILT) "@Inject" else "")
-                    setProperty("hiltImport", if (diFramework == DiFramework.HILT) "import dagger.hilt.android.lifecycle.HiltViewModel" else "")
-                    setProperty("injectImport", if (diFramework == DiFramework.HILT) "import javax.inject.Inject" else "")
-                    setProperty("hiltViewModelComposableImport", if (diFramework == DiFramework.HILT) "import androidx.hilt.navigation.compose.hiltViewModel" else "import org.koin.androidx.compose.koinViewModel")
-                    setProperty("viewModelComposable", if (diFramework == DiFramework.HILT) "hiltViewModel()" else "koinViewModel()")
+                    setProperty("hiltViewModelAnnotation", if (diFramework == DependencyInjectionFramework.HILT) "@HiltViewModel" else "")
+                    setProperty("injectAnnotation", if (diFramework == DependencyInjectionFramework.HILT) "@Inject" else "")
+                    setProperty("hiltImport", if (diFramework == DependencyInjectionFramework.HILT) "import dagger.hilt.android.lifecycle.HiltViewModel" else "")
+                    setProperty("injectImport", if (diFramework == DependencyInjectionFramework.HILT) "import javax.inject.Inject" else "")
+                    setProperty("hiltViewModelComposableImport", if (diFramework == DependencyInjectionFramework.HILT) "import androidx.hilt.navigation.compose.hiltViewModel" else "import org.koin.androidx.compose.koinViewModel")
+                    setProperty("viewModelComposable", if (diFramework == DependencyInjectionFramework.HILT) "hiltViewModel()" else "koinViewModel()")
+
+                    if (navLibrary == NavigationLibrary.NAV3) {
+                        setProperty("nav3Import", "import androidx.navigation3.runtime.NavKey")
+                        setProperty("nav3Inheritance", ": NavKey")
+                        setProperty("routeDeclaration", "data object")
+                    } else {
+                        setProperty("nav3Import", "")
+                        setProperty("nav3Inheritance", "")
+                        setProperty("routeDeclaration", "data object")
+                    }
                 }
 
-                // File comuni
                 val commonFiles = listOf(
                     Triple(presentationDir, "Action.kt.ftl", "${capitalizedFeatureName}Action.kt"),
                     Triple(presentationDir, "Event.kt.ftl", "${capitalizedFeatureName}Event.kt"),
@@ -84,27 +94,22 @@ class CreateCleanFeatureAction : AnAction() {
                     Triple(dataRepoDir, "RepositoryImpl.kt.ftl", "Default${capitalizedFeatureName}Repository.kt"),
                     Triple(dataMappersDir, "Mappers.kt.ftl", "${capitalizedFeatureName}Mappers.kt")
                 )
-                commonFiles.forEach { (dir, template, output) ->
-                    createFileFromTemplate(project, dir, template, output, templateProperties)
+                commonFiles.forEach { (dir, templateName, outputName) ->
+                    createFileFromTemplate(project, dir, templateName, outputName, templateProperties)
                 }
 
-                // File DI per Layer
-                if (diFramework == DiFramework.HILT) {
+                if (diFramework == DependencyInjectionFramework.HILT) {
                     createFileFromTemplate(project, dataDiDir, "DataModule_Hilt.kt.ftl", "${capitalizedFeatureName}DataModule.kt", templateProperties)
                     createFileFromTemplate(project, domainDiDir, "DomainModule_Hilt.kt.ftl", "${capitalizedFeatureName}DomainModule.kt", templateProperties)
-                } else { // Koin
+                } else {
                     createFileFromTemplate(project, dataDiDir, "DataModule_Koin.kt.ftl", "${capitalizedFeatureName}DataModule.kt", templateProperties)
                     createFileFromTemplate(project, domainDiDir, "DomainModule_Koin.kt.ftl", "${capitalizedFeatureName}DomainModule.kt", templateProperties)
                     createFileFromTemplate(project, presentationDiDir, "PresentationModule_Koin.kt.ftl", "${capitalizedFeatureName}PresentationModule.kt", templateProperties)
                 }
 
-                // --- MODIFICA 1: Popup di successo commentato ---
-                // val successMessage = MessageFormat.format(bundle.getString("success.message"), capitalizedFeatureName)
-                // Messages.showMessageDialog(project, successMessage, bundle.getString("success.title"), Messages.getInformationIcon())
-
             } catch (ex: Exception) {
                 val errorMessage = MessageFormat.format(bundle.getString("error.message"), ex.message)
-                Messages.showErrorDialog(errorMessage, bundle.getString("error.title"))
+                Messages.showErrorDialog(project, errorMessage, bundle.getString("error.title"))
                 ex.printStackTrace()
             }
         }
@@ -113,20 +118,20 @@ class CreateCleanFeatureAction : AnAction() {
     private fun createFileFromTemplate(project: Project, dir: PsiDirectory, templateFileName: String, outputFileName: String, properties: Properties) {
         val templatePath = "fileTemplates/internal/$templateFileName"
         var content = javaClass.classLoader.getResourceAsStream(templatePath)?.bufferedReader()?.readText()
-            ?: throw Exception("FATALE: Risorsa non trovata: $templatePath")
+            ?: throw Exception("Template not found: $templateFileName")
 
+        // --- LA CORREZIONE DEFINITIVA PER I TERMINATORI DI RIGA ---
         content = content.replace("\r\n", "\n")
 
         properties.forEach { key, value ->
             content = content.replace("\${${key}}", value.toString())
         }
 
-        val aPackage = JavaDirectoryService.getInstance().getPackage(dir)
-        val packageName = aPackage?.qualifiedName ?: ""
-        val packageStatement = if (packageName.isNotBlank()) "package $packageName" else ""
-        content = content.replace("#if (\${PACKAGE_NAME} && \${PACKAGE_NAME} != \"\")package \${PACKAGE_NAME} #end", packageStatement)
+        val kotlinFileType = FileTypeManager.getInstance().getStdFileType("Kotlin")
+        val kotlinLanguage = (kotlinFileType as? LanguageFileType)?.language
+            ?: throw IllegalStateException("Kotlin language not found.")
 
-        val newFile = PsiFileFactory.getInstance(project).createFileFromText(outputFileName, KotlinLanguage.INSTANCE, content)
+        val newFile = PsiFileFactory.getInstance(project).createFileFromText(outputFileName, kotlinLanguage, content, true, false)
         dir.add(newFile)
     }
 
@@ -138,6 +143,4 @@ class CreateCleanFeatureAction : AnAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
-
-    private fun PsiDirectory.getPackage(): com.intellij.psi.PsiPackage? = JavaDirectoryService.getInstance().getPackage(this)
 }

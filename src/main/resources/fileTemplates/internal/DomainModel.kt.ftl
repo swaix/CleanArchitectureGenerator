@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 /**
  * Rappresenta il modello di dominio principale per la feature ${featureName}.
  * Questa è la classe "pulita" che viene utilizzata all'interno dell'app (domain, presentation).

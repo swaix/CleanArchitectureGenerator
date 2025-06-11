@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 import ${rootPackageName}.${featureNameLowerCase}.data.repository.Default${featureName}Repository
 import ${rootPackageName}.${featureNameLowerCase}.domain.repository.${featureName}Repository
 import org.koin.dsl.module

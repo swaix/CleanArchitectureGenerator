@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

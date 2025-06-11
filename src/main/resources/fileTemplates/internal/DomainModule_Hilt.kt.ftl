@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

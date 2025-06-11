@@ -1,10 +1,9 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
+${nav3Import}
 import kotlinx.serialization.Serializable
 
 /**
  * Definisce la rotta di navigazione per la schermata ${featureName}.
- * Utilizzato da una libreria di navigazione type-safe (es. Ktor, Decompose, o Navigation Compose).
+ * Utilizzato da una libreria di navigazione type-safe.
  */
 @Serializable
-data object ${featureName}Route
+${routeDeclaration} ${featureName}Route ${nav3Inheritance}

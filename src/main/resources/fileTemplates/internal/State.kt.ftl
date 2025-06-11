@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 /**
  * Rappresenta lo stato della UI per la feature ${featureName}.
  *

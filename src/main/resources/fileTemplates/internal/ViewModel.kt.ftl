@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 ${hiltImport}

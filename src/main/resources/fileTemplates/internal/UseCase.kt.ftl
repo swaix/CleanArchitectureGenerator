@@ -1,5 +1,3 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
-
 import ${rootPackageName}.${featureNameLowerCase}.domain.model.${featureName}
 import ${rootPackageName}.${featureNameLowerCase}.domain.repository.${featureName}Repository
 ${injectImport}
