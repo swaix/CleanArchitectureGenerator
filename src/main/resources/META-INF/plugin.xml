@@ -5,8 +5,20 @@
 
     <description><![CDATA[
         <h1>Clean Architecture Feature Generator</h1>
-        <p>Questo plugin assiste nella creazione rapida di una nuova feature seguendo i principi della Clean Architecture.</p>
-        <p><b>Come si usa:</b> Fai clic con il pulsante destro del mouse su un package nel tuo progetto, vai su "New" e seleziona "Clean Architecture Feature".</p>
+        <p>Speed up your Android development workflow by generating a complete, layered feature module based on Clean Architecture principles.</p>
+        <p>This plugin creates the entire directory structure and boilerplate files for the <b>Presentation</b>, <b>Domain</b>, and <b>Data</b> layers, allowing you to focus on writing business logic instead of setting up files.</p>
+
+        <h2>How to Use</h2>
+        <p>Simply right-click on the package where you want to create the new feature, navigate to <b>New -> Clean Architecture Feature</b>, and fill in the details in the dialog.</p>
+
+        <h2>Key Features</h2>
+        <ul>
+            <li><b>Custom Feature Name:</b> Define the name for your new feature (e.g., "Home", "Profile").</li>
+            <li><b>Dependency Injection:</b> Choose between <b>Hilt</b> and <b>Koin</b> to generate the appropriate DI modules.</li>
+            <li><b>Navigation Style:</b> Select your preferred navigation setup, including support for type-safe navigation with <b>NavKey</b>.</li>
+            <li><b>K2 Compiler Ready:</b> Fully compatible with the modern K2 Kotlin compiler.</li>
+        </ul>
+        <p>Save time and enforce consistency in your projects with this powerful generator.</p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
@@ -19,9 +31,9 @@
         <action id="CleanArchitectureGenerator.CreateNewFeature"
                 class="swaix.dev.plugin.cleanarchitecturegenerator.CreateCleanFeatureAction"
                 text="Clean Architecture Feature"
-                description="Crea una nuova feature seguendo la Clean Architecture."
+                description="Creates a new feature following Clean Architecture principles."
                 icon="/icons/plugin_icon.svg">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
+            <add-to-group group-id="NewGroup" anchor="first"/>
         </action>
     </actions>
 </idea-plugin>
