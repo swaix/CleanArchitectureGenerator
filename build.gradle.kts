@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "swaix.dev.plugin"
-version = "1.1"
+version = "1.2"
 
 repositories {
     mavenCentral()
@@ -38,7 +38,7 @@ intellijPlatform {
         }
         changeNotes.set(
             """
-            Version 1.1.0: Fix on imports
+            Version 1.2.0: Koin / hilt import
             """.trimIndent()
         )
     }

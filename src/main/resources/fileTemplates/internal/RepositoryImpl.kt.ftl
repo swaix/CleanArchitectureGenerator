@@ -3,14 +3,12 @@
 import ${rootPackageName}.${featureNameLowerCase}.data.mappers.toDomain
 import ${rootPackageName}.${featureNameLowerCase}.domain.model.${featureName}
 import ${rootPackageName}.${featureNameLowerCase}.domain.repository.${featureName}Repository
-import javax.inject.Inject
+${injectImport}
 
 /**
  * Implementazione concreta del repository per la feature ${featureName}.
- * Si occupa di recuperare i dati da fonti esterne, mapparli nel modello di dominio e restituirli.
- * Le dipendenze per le fonti dati (es. ApiService, Dao) vengono iniettate nel costruttore.
  */
-class Default${featureName}Repository @Inject constructor() : ${featureName}Repository {
+class Default${featureName}Repository ${injectAnnotation} constructor() : ${featureName}Repository {
 
     override suspend fun get${featureName}Data(): Result<${featureName}> {
         return try {

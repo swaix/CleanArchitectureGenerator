@@ -2,12 +2,12 @@
 
 import ${rootPackageName}.${featureNameLowerCase}.domain.model.${featureName}
 import ${rootPackageName}.${featureNameLowerCase}.domain.repository.${featureName}Repository
-import javax.inject.Inject
+${injectImport}
 
 /**
  * Use case che incapsula la logica di business per ottenere i dati della feature ${featureName}.
  */
-class Get${featureName}DataUseCase @Inject constructor(
+class Get${featureName}DataUseCase ${injectAnnotation} constructor(
     private val repository: ${featureName}Repository
 ) {
 

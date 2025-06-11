@@ -2,40 +2,25 @@
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ${rootPackageName}.${featureNameLowerCase}.presentation.contract.${featureName}Action
-import ${rootPackageName}.${featureNameLowerCase}.presentation.contract.${featureName}Event
-import ${rootPackageName}.${featureNameLowerCase}.presentation.contract.${featureName}State
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+${hiltImport}
+${injectImport}
+import ${rootPackageName}.${featureNameLowerCase}.domain.usecase.Get${featureName}DataUseCase
+import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}Action
+import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}Event
+import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}State
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
  * Gestisce la logica di business e lo stato per la feature ${featureName}.
  */
-class ${featureName}ViewModel : ViewModel() {
-
-    private var hasLoadedInitialData = false
+${hiltViewModelAnnotation}
+class ${featureName}ViewModel ${injectAnnotation} constructor(
+    private val get${featureName}DataUseCase: Get${featureName}DataUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(${featureName}State())
-    /**
-     * Flusso di stato della UI.
-     */
-    val state = _state
-        .onStart {
-            if (hasLoadedInitialData) {
-                // Logica da eseguire alla ri-sottoscrizione
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = ${featureName}State()
-        )
+    val state = _state.asStateFlow()
 
     private val _event = MutableSharedFlow<${featureName}Event>()
     val event = _event.asSharedFlow()
@@ -44,29 +29,28 @@ class ${featureName}ViewModel : ViewModel() {
         loadInitialData()
     }
 
-    /**
-     * Gestisce le azioni provenienti dalla UI.
-     */
     fun onAction(action: ${featureName}Action) {
         when (action) {
-            // Gestione delle azioni
+            // Aggiungere qui la gestione delle azioni specifiche
+            else -> {
+                // Azione non gestita
+            }
         }
     }
 
     private fun loadInitialData() {
-        if (hasLoadedInitialData) return
-
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            // Logica per il caricamento dei dati iniziali
-            hasLoadedInitialData = true
-            _state.update { it.copy(isLoading = false) }
-        }
-    }
 
-    private fun sendEvent(event: ${featureName}Event) {
-        viewModelScope.launch {
-            _event.emit(event)
+            get${featureName}DataUseCase()
+                .onSuccess {
+                    // Esempio: aggiorna lo stato con i dati
+                }
+                .onFailure {
+                    // Esempio: invia un evento di errore
+                }
+
+            _state.update { it.copy(isLoading = false) }
         }
     }
 }

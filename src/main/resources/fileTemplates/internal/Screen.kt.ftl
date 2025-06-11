@@ -10,19 +10,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ${rootPackageName}.${featureNameLowerCase}.presentation.contract.${featureName}Action
-import ${rootPackageName}.${featureNameLowerCase}.presentation.contract.${featureName}Event
-import ${rootPackageName}.${featureNameLowerCase}.presentation.contract.${featureName}State
-import ${rootPackageName}.${featureNameLowerCase}.presentation.viewmodel.${featureName}ViewModel
+${hiltViewModelComposableImport}
+import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}Action
+import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}Event
+import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}State
+import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}ViewModel
 
 /**
  * Entry point composable per la feature ${featureName}.
  */
 @Composable
 fun ${featureName}Root(
-    viewModel: ${featureName}ViewModel = hiltViewModel(),
+    viewModel: ${featureName}ViewModel = ${viewModelComposable},
     onEvent: (${featureName}Event) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -64,15 +64,6 @@ private fun ${featureName}Screen(
 private fun Preview${featureName}Screen() {
     ${featureName}Screen(
         state = ${featureName}State(isLoading = false),
-        onAction = {}
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun Preview${featureName}ScreenLoading() {
-    ${featureName}Screen(
-        state = ${featureName}State(isLoading = true),
         onAction = {}
     )
 }
