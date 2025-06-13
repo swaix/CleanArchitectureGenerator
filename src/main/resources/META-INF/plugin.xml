@@ -25,7 +25,8 @@
     <depends>com.intellij.modules.java</depends>
 
     <resource-bundle>messages.PluginMessages</resource-bundle>
-    <idea-version since-build="243" until-build="243.*"/>
+
+    <idea-version since-build="243"/>
 
     <actions>
         <action id="CleanArchitectureGenerator.CreateNewFeature"
