@@ -1,8 +1,6 @@
-/**
- * Rappresenta lo stato della UI per la feature ${featureName}.
- *
- * @property isLoading Indica se è in corso un'operazione di caricamento.
- */
+import ${rootPackageName}.${featureNameLowerCase}.presentation.model.${featureName}UiModel
+
 data class ${featureName}State(
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val items: List<${featureName}UiModel> = emptyList()
 )

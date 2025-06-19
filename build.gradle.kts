@@ -1,7 +1,7 @@
 import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
-// ... (il blocco per leggere local.properties rimane uguale)
+// Il blocco per leggere local.properties rimane invariato
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "swaix.dev.plugin"
-version = "1.0.2" // Versione per la correzione del warning
+version = "1.1.0" // Nuova versione con UI Model e Mapper
 
 repositories {
     mavenCentral()
@@ -30,8 +30,6 @@ dependencies {
         bundledPlugin("com.intellij.java")
         bundledPlugin("org.jetbrains.kotlin")
     }
-    // --- LA CORREZIONE È QUI ---
-    // Usiamo compileOnly per non includere la libreria nel JAR finale.
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0")
 }
 
@@ -42,9 +40,12 @@ intellijPlatform {
         }
         changeNotes.set(
             """
-            <h1>Version 1.0.2</h1>
+            <h1>Version 1.1.0</h1>
+            <p><b>Feature Update: Enhanced Presentation Layer!</b></p>
             <ul>
-                <li>Fixed a compatibility warning by excluding bundled IDE packages from the plugin distribution.</li>
+                <li><b>New:</b> Added UI Model generation (`YourFeatureUiModel.kt`) to better represent data for the UI.</li>
+                <li><b>New:</b> Added a Mapper (`YourFeatureUiMapper.kt`) to cleanly convert Domain models to UI models.</li>
+                <li>This promotes a stricter separation of concerns between the Domain and Presentation layers.</li>
             </ul>
             """.trimIndent()
         )

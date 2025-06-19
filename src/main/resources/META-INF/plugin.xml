@@ -1,24 +1,61 @@
 <idea-plugin>
     <id>swaix.dev.plugin.cleanarchitecturegenerator</id>
-    <name>Clean Architecture Feature Generator</name>
+    <name>DroidForge: Clean Architecture Generator</name>
     <vendor>SwaixDev</vendor>
 
     <description><![CDATA[
-        <h1>Clean Architecture Feature Generator</h1>
-        <p>Speed up your Android development workflow by generating a complete, layered feature module based on Clean Architecture principles.</p>
-        <p>This plugin creates the entire directory structure and boilerplate files for the <b>Presentation</b>, <b>Domain</b>, and <b>Data</b> layers, allowing you to focus on writing business logic instead of setting up files.</p>
+        <h1>DroidForge: Say Goodbye to Boilerplate!</h1>
+        <p>Are you tired of the repetitive task of creating dozens of files and folders every time you start a new feature in your Android project? <b>DroidForge</b> is the professional solution to automate your workflow, letting you focus on what truly matters: building amazing user experiences.</p>
+
+        <h2>What It Does</h2>
+        <p>With a single action, DroidForge generates a complete, robust, and scalable feature structure based on Clean Architecture principles. It's the perfect tool for maintaining consistency and accelerating your development.</p>
+
+        <h3>Generated File Structure</h3>
+        <p>For a feature named "MyFeature", you get this entire, compilable structure instantly:</p>
+        <pre>
+MyFeature/
++-- data/
+|   +-- di/
+|   |   \-- MyFeatureDataModule.kt
+|   +-- mappers/
+|   |   \-- MyFeatureMappers.kt
+|   +-- model/
+|   |   \-- MyFeatureDto.kt
+|   \-- repository/
+|       \-- DefaultMyFeatureRepository.kt
++-- domain/
+|   +-- di/
+|   |   \-- MyFeatureDomainModule.kt
+|   +-- model/
+|   |   \-- MyFeature.kt
+|   +-- repository/
+|   |   \-- MyFeatureRepository.kt
+|   \-- usecase/
+|       \-- GetMyFeatureDataUseCase.kt
+\-- presentation/
+    +-- di/
+    |   \-- MyFeaturePresentationModule.kt
+    +-- mappers/
+    |   \-- MyFeatureUiMapper.kt
+    +-- model/
+    |   \-- MyFeatureUiModel.kt
+    +-- MyFeatureAction.kt
+    +-- MyFeatureEvent.kt
+    +-- MyFeatureRoute.kt
+    +-- MyFeatureScreen.kt
+    +-- MyFeatureState.kt
+    \-- MyFeatureViewModel.kt
+        </pre>
+
+        <h2>Fully Customizable</h2>
+        <p>A simple dialog lets you configure the generation process:</p>
+        <ul>
+            <li><b>Dependency Injection:</b> Choose between <b>Hilt</b> and <b>Koin</b>.</li>
+            <li><b>Navigation Style:</b> Select between a standard setup or an advanced style with improved backstack handling (Nav3-style).</li>
+        </ul>
 
         <h2>How to Use</h2>
-        <p>Simply right-click on the package where you want to create the new feature, navigate to <b>New -> Clean Architecture Feature</b>, and fill in the details in the dialog.</p>
-
-        <h2>Key Features</h2>
-        <ul>
-            <li><b>Custom Feature Name:</b> Define the name for your new feature (e.g., "Home", "Profile").</li>
-            <li><b>Dependency Injection:</b> Choose between <b>Hilt</b> and <b>Koin</b> to generate the appropriate DI modules.</li>
-            <li><b>Navigation Style:</b> Select your preferred navigation setup, including support for type-safe navigation with <b>NavKey</b>.</li>
-            <li><b>K2 Compiler Ready:</b> Fully compatible with the modern K2 Kotlin compiler.</li>
-        </ul>
-        <p>Save time and enforce consistency in your projects with this powerful generator.</p>
+        <p>Right-click on a package -> New -> <b>DroidForge: Clean Architecture Generator</b>.</p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
@@ -31,7 +68,7 @@
     <actions>
         <action id="CleanArchitectureGenerator.CreateNewFeature"
                 class="swaix.dev.plugin.cleanarchitecturegenerator.CreateCleanFeatureAction"
-                text="Clean Architecture Feature"
+                text="DroidForge: Clean Architecture Generator"
                 description="Creates a new feature following Clean Architecture principles."
                 icon="/icons/plugin_icon.svg">
             <add-to-group group-id="NewGroup" anchor="first"/>

@@ -1,1 +1,1 @@
-rootProject.name = "CleanArchitectureGenerator"
+rootProject.name = "DroidForge"

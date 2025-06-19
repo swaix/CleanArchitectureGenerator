@@ -42,7 +42,11 @@ class CreateCleanFeatureAction : AnAction() {
             try {
                 val featureDir = currentDirectory.createSubdirectory(featureName.lowercase())
                 val presentationDir = featureDir.createSubdirectory("presentation")
+                // --- NUOVE DIRECTORY ---
+                val presentationModelDir = presentationDir.createSubdirectory("model")
+                val presentationMappersDir = presentationDir.createSubdirectory("mappers")
                 val presentationDiDir = presentationDir.createSubdirectory("di")
+                // ---
                 val domainDir = featureDir.createSubdirectory("domain")
                 val domainModelDir = domainDir.createSubdirectory("model")
                 val domainRepoDir = domainDir.createSubdirectory("repository")
@@ -81,6 +85,10 @@ class CreateCleanFeatureAction : AnAction() {
                 }
 
                 val commonFiles = listOf(
+                    // --- NUOVI FILE AGGIUNTI ---
+                    Triple(presentationModelDir, "UiModel.kt.ftl", "${capitalizedFeatureName}UiModel.kt"),
+                    Triple(presentationMappersDir, "UiMapper.kt.ftl", "${capitalizedFeatureName}UiMapper.kt"),
+                    // ---
                     Triple(presentationDir, "Action.kt.ftl", "${capitalizedFeatureName}Action.kt"),
                     Triple(presentationDir, "Event.kt.ftl", "${capitalizedFeatureName}Event.kt"),
                     Triple(presentationDir, "Route.kt.ftl", "${capitalizedFeatureName}Route.kt"),
@@ -120,7 +128,6 @@ class CreateCleanFeatureAction : AnAction() {
         var content = javaClass.classLoader.getResourceAsStream(templatePath)?.bufferedReader()?.readText()
             ?: throw Exception("Template not found: $templateFileName")
 
-        // --- LA CORREZIONE DEFINITIVA PER I TERMINATORI DI RIGA ---
         content = content.replace("\r\n", "\n")
 
         properties.forEach { key, value ->
