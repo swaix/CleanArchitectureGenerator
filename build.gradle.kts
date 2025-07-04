@@ -1,7 +1,7 @@
 import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
-// Il blocco per leggere local.properties rimane invariato
+
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "swaix.dev.plugin"
-version = "1.1.0" // Nuova versione con UI Model e Mapper
+version = "1.1.1"
 
 repositories {
     mavenCentral()
@@ -40,12 +40,13 @@ intellijPlatform {
         }
         changeNotes.set(
             """
-            <h1>Version 1.1.0</h1>
+            <h1>Version 1.1.1</h1>
             <p><b>Feature Update: Enhanced Presentation Layer!</b></p>
             <ul>
                 <li><b>New:</b> Added UI Model generation (`YourFeatureUiModel.kt`) to better represent data for the UI.</li>
                 <li><b>New:</b> Added a Mapper (`YourFeatureUiMapper.kt`) to cleanly convert Domain models to UI models.</li>
                 <li>This promotes a stricter separation of concerns between the Domain and Presentation layers.</li>
+                <li>Fix on DI import for deprecation</li>
             </ul>
             """.trimIndent()
         )
