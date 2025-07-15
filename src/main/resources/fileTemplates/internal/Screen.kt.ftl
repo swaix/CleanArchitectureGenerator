@@ -7,16 +7,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-${hiltViewModelComposableImport}
-import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}Action
-import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}Event
-import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}State
-import ${rootPackageName}.${featureNameLowerCase}.presentation.${featureName}ViewModel
+${screenImports}
 
 /**
- * Entry point composable per la feature ${featureName}.
+ * Composable entry point for the ${featureName} feature.
  */
 @Composable
 fun ${featureName}Root(
@@ -38,7 +33,7 @@ fun ${featureName}Root(
 }
 
 /**
- * Composable "stateless" che disegna la UI per la feature ${featureName}.
+ * A stateless composable that draws the UI for the ${featureName} feature.
  */
 @Composable
 private fun ${featureName}Screen(
@@ -56,12 +51,4 @@ private fun ${featureName}Screen(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun Preview${featureName}Screen() {
-    ${featureName}Screen(
-        state = ${featureName}State(isLoading = false),
-        onAction = {}
-    )
-}
+${previewBlock}

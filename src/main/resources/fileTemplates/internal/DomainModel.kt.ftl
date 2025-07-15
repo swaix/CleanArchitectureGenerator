@@ -1,9 +1,9 @@
 /**
- * Rappresenta il modello di dominio principale per la feature ${featureName}.
- * Questa è la classe "pulita" che viene utilizzata all'interno dell'app (domain, presentation).
+ * Represents the main domain model for the ${featureName} feature.
+ * This is the "clean" class used within the app (domain, presentation).
  *
- * @property id L'identificatore univoco del modello.
- * @property data Un campo dati di esempio per il modello.
+ * @property id The unique identifier of the model.
+ * @property data An example data field for the model.
  */
 data class ${featureName}(
     val id: String,

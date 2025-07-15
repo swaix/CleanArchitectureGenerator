@@ -1,5 +1,6 @@
 package swaix.dev.plugin.cleanarchitecturegenerator
 
+import com.intellij.ide.util.PropertiesComponent
 import com.intellij.lang.Language
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -15,8 +16,23 @@ import com.intellij.psi.PsiFileFactory
 import java.text.MessageFormat
 import java.util.*
 
+/**
+ * An IDE action that triggers the generation of a new feature module based on Clean Architecture.
+ * This action is available from the "New" menu when right-clicking on a directory.
+ */
 class CreateCleanFeatureAction : AnAction() {
 
+    companion object {
+        const val LAST_PLATFORM_KEY = "DroidForge.LastPlatform"
+        const val LAST_DI_KEY = "DroidForge.LastDI"
+        const val LAST_NAV_KEY = "DroidForge.LastNav"
+    }
+
+    /**
+     * This method is called when the user selects the action from the menu.
+     * It displays a dialog to gather feature details and then runs a write command to create the files.
+     * @param e The event containing the context of the action.
+     */
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val currentDirectory = e.getData(CommonDataKeys.PSI_ELEMENT) as? PsiDirectory ?: return
@@ -26,27 +42,36 @@ class CreateCleanFeatureAction : AnAction() {
         if (!dialog.showAndGet()) return
 
         val featureName = dialog.featureName
-        val diFramework = dialog.selectedFramework
-        val navLibrary = dialog.selectedNavigation
+        var diFramework = dialog.selectedFramework
+        var navLibrary = dialog.selectedNavigation
+        val platform = dialog.selectedPlatform
+
+        val properties = PropertiesComponent.getInstance()
+        properties.setValue(LAST_PLATFORM_KEY, platform.name)
+        properties.setValue(LAST_DI_KEY, diFramework.name)
+        properties.setValue(LAST_NAV_KEY, navLibrary.name)
+
         if (featureName.isBlank()) return
 
         val rootPackage = (e.getData(CommonDataKeys.PSI_ELEMENT) as? PsiDirectory)?.let {
             com.intellij.psi.JavaDirectoryService.getInstance().getPackage(it)?.qualifiedName
         }
         if (rootPackage.isNullOrBlank()) {
-            Messages.showErrorDialog(project, "Impossibile determinare il package della cartella selezionata.", bundle.getString("error.title"))
+            Messages.showErrorDialog(project, "Could not determine the package of the selected folder.", bundle.getString("error.title"))
             return
+        }
+
+        if (platform == Platform.KMM) {
+            diFramework = DependencyInjectionFramework.KOIN
+            navLibrary = NavigationLibrary.NAV2
         }
 
         WriteCommandAction.runWriteCommandAction(project) {
             try {
                 val featureDir = currentDirectory.createSubdirectory(featureName.lowercase())
                 val presentationDir = featureDir.createSubdirectory("presentation")
-                // --- NUOVE DIRECTORY ---
                 val presentationModelDir = presentationDir.createSubdirectory("model")
-                val presentationMappersDir = presentationDir.createSubdirectory("mappers")
                 val presentationDiDir = presentationDir.createSubdirectory("di")
-                // ---
                 val domainDir = featureDir.createSubdirectory("domain")
                 val domainModelDir = domainDir.createSubdirectory("model")
                 val domainRepoDir = domainDir.createSubdirectory("repository")
@@ -70,8 +95,30 @@ class CreateCleanFeatureAction : AnAction() {
                     setProperty("injectAnnotation", if (diFramework == DependencyInjectionFramework.HILT) "@Inject" else "")
                     setProperty("hiltImport", if (diFramework == DependencyInjectionFramework.HILT) "import dagger.hilt.android.lifecycle.HiltViewModel" else "")
                     setProperty("injectImport", if (diFramework == DependencyInjectionFramework.HILT) "import javax.inject.Inject" else "")
-                    setProperty("hiltViewModelComposableImport", if (diFramework == DependencyInjectionFramework.HILT) "import androidx.hilt.navigation.compose.hiltViewModel" else "import org.koin.androidx.compose.koinViewModel")
-                    setProperty("viewModelComposable", if (diFramework == DependencyInjectionFramework.HILT) "hiltViewModel()" else "koinViewModel()")
+
+                    if (platform == Platform.KMM) {
+                        setProperty("screenImports", "import org.koin.compose.viewmodel.koinViewModel")
+                        setProperty("viewModelComposable", "koinViewModel()")
+                        setProperty("previewBlock", "")
+                    } else {
+                        val composeImport = if (diFramework == DependencyInjectionFramework.HILT) {
+                            "import androidx.hilt.navigation.compose.hiltViewModel"
+                        } else {
+                            "import org.koin.androidx.compose.koinViewModel"
+                        }
+                        setProperty("screenImports", "$composeImport\nimport androidx.compose.ui.tooling.preview.Preview")
+                        setProperty("viewModelComposable", if (diFramework == DependencyInjectionFramework.HILT) "hiltViewModel()" else "koinViewModel()")
+                        setProperty("previewBlock", """
+@Preview(showBackground = true)
+@Composable
+private fun Preview${capitalizedFeatureName}Screen() {
+    ${capitalizedFeatureName}Screen(
+        state = ${capitalizedFeatureName}State(isLoading = false),
+        onAction = {}
+    )
+}
+                        """.trimIndent())
+                    }
 
                     if (navLibrary == NavigationLibrary.NAV3) {
                         setProperty("nav3Import", "import androidx.navigation3.runtime.NavKey")
@@ -85,10 +132,7 @@ class CreateCleanFeatureAction : AnAction() {
                 }
 
                 val commonFiles = listOf(
-                    // --- NUOVI FILE AGGIUNTI ---
                     Triple(presentationModelDir, "UiModel.kt.ftl", "${capitalizedFeatureName}UiModel.kt"),
-                    Triple(presentationMappersDir, "UiMapper.kt.ftl", "${capitalizedFeatureName}UiMapper.kt"),
-                    // ---
                     Triple(presentationDir, "Action.kt.ftl", "${capitalizedFeatureName}Action.kt"),
                     Triple(presentationDir, "Event.kt.ftl", "${capitalizedFeatureName}Event.kt"),
                     Triple(presentationDir, "Route.kt.ftl", "${capitalizedFeatureName}Route.kt"),
@@ -123,6 +167,15 @@ class CreateCleanFeatureAction : AnAction() {
         }
     }
 
+    /**
+     * Creates a file in the specified directory from a template.
+     *
+     * @param project The current project.
+     * @param dir The target directory where the file will be created.
+     * @param templateFileName The name of the template file to use.
+     * @param outputFileName The name of the output file.
+     * @param properties The properties to replace in the template.
+     */
     private fun createFileFromTemplate(project: Project, dir: PsiDirectory, templateFileName: String, outputFileName: String, properties: Properties) {
         val templatePath = "fileTemplates/internal/$templateFileName"
         var content = javaClass.classLoader.getResourceAsStream(templatePath)?.bufferedReader()?.readText()
@@ -134,6 +187,8 @@ class CreateCleanFeatureAction : AnAction() {
             content = content.replace("\${${key}}", value.toString())
         }
 
+        content = content.replace("\${previewBlock}", properties.getProperty("previewBlock", ""))
+
         val kotlinFileType = FileTypeManager.getInstance().getStdFileType("Kotlin")
         val kotlinLanguage = (kotlinFileType as? LanguageFileType)?.language
             ?: throw IllegalStateException("Kotlin language not found.")
@@ -142,11 +197,19 @@ class CreateCleanFeatureAction : AnAction() {
         dir.add(newFile)
     }
 
+    /**
+     * Determines the visibility and state of the action.
+     * The action is only enabled if the user has selected a directory.
+     * @param e The event containing the context.
+     */
     override fun update(e: AnActionEvent) {
         val psiElement = e.getData(CommonDataKeys.PSI_ELEMENT)
         e.presentation.isEnabledAndVisible = psiElement is PsiDirectory
     }
 
+    /**
+     * Specifies that the action's update method should be run on a background thread.
+     */
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }

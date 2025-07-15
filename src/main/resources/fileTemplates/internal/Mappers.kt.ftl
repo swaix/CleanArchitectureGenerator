@@ -2,13 +2,13 @@ import ${rootPackageName}.${featureNameLowerCase}.data.model.${featureName}Dto
 import ${rootPackageName}.${featureNameLowerCase}.domain.model.${featureName}
 
 /**
- * Mappa un oggetto ${featureName}Dto (Data Layer) a un oggetto ${featureName} (Domain Layer).
+ * Maps a ${featureName}Dto (Data Layer) object to a ${featureName} (Domain Layer) object.
  *
- * @return L'oggetto ${featureName} mappato.
+ * @return The mapped ${featureName} object.
  */
 fun ${featureName}Dto.toDomain(): ${featureName} {
     return ${featureName}(
         id = this.uniqueId,
-        data = this.payload ?: "Dato non disponibile"
+        data = this.payload ?: "Data not available"
     )
 }

@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "swaix.dev.plugin"
-version = "1.1.1"
+version = "1.2.0"
 
 repositories {
     mavenCentral()
@@ -36,17 +36,17 @@ dependencies {
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild.set("243")
+            sinceBuild.set("233")
         }
         changeNotes.set(
             """
-            <h1>Version 1.1.1</h1>
-            <p><b>Feature Update: Enhanced Presentation Layer!</b></p>
+            <h1>Version 1.2.0</h1>
+            <p><b>Major Feature: KMM Support!</b></p>
             <ul>
-                <li><b>New:</b> Added UI Model generation (`YourFeatureUiModel.kt`) to better represent data for the UI.</li>
-                <li><b>New:</b> Added a Mapper (`YourFeatureUiMapper.kt`) to cleanly convert Domain models to UI models.</li>
-                <li>This promotes a stricter separation of concerns between the Domain and Presentation layers.</li>
-                <li>Fix on DI import for deprecation</li>
+                <li><b>New:</b> Added a platform selector to choose between <b>Native Android</b> and <b>Kotlin Multiplatform Mobile (KMM)</b>.</li>
+                <li>When KMM is selected, the generator creates files compatible with shared code, removing Android-specific dependencies like Previews.</li>
+                <li>The Koin dependency injection setup is now adapted for KMM.</li>
+                <li>All KDoc comments and UI text have been translated to English.</li>
             </ul>
             """.trimIndent()
         )

@@ -1,7 +1,7 @@
 /**
- * Definisce le azioni che possono essere inviate dalla UI al ViewModel
- * per la feature ${featureName}.
+ * Defines the actions that can be sent from the UI to the ViewModel
+ * for the ${featureName} feature.
  */
 sealed interface ${featureName}Action {
-    // Esempio: data class ButtonClicked(val itemId: String) : ${featureName}Action
+    // Example: data class ButtonClicked(val itemId: String) : ${featureName}Action
 }

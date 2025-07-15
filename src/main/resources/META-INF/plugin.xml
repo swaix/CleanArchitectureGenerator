@@ -2,56 +2,24 @@
     <id>swaix.dev.plugin.cleanarchitecturegenerator</id>
     <name>DroidForge: Clean Architecture Generator</name>
     <vendor>SwaixDev</vendor>
+    <version>1.2.0</version>
 
     <description><![CDATA[
         <h1>DroidForge: Say Goodbye to Boilerplate!</h1>
-        <p>Are you tired of the repetitive task of creating dozens of files and folders every time you start a new feature in your Android project? <b>DroidForge</b> is the professional solution to automate your workflow, letting you focus on what truly matters: building amazing user experiences.</p>
+        <p>Are you tired of the repetitive task of creating dozens of files and folders every time you start a new feature in your Android or KMM project? <b>DroidForge</b> is the professional solution to automate your workflow, letting you focus on what truly matters: building amazing experiences.</p>
 
         <h2>What It Does</h2>
         <p>With a single action, DroidForge generates a complete, robust, and scalable feature structure based on Clean Architecture principles. It's the perfect tool for maintaining consistency and accelerating your development.</p>
 
         <h3>Generated File Structure</h3>
-        <p>For a feature named "MyFeature", you get this entire, compilable structure instantly:</p>
-        <pre>
-MyFeature/
-+-- data/
-|   +-- di/
-|   |   \-- MyFeatureDataModule.kt
-|   +-- mappers/
-|   |   \-- MyFeatureMappers.kt
-|   +-- model/
-|   |   \-- MyFeatureDto.kt
-|   \-- repository/
-|       \-- DefaultMyFeatureRepository.kt
-+-- domain/
-|   +-- di/
-|   |   \-- MyFeatureDomainModule.kt
-|   +-- model/
-|   |   \-- MyFeature.kt
-|   +-- repository/
-|   |   \-- MyFeatureRepository.kt
-|   \-- usecase/
-|       \-- GetMyFeatureDataUseCase.kt
-\-- presentation/
-    +-- di/
-    |   \-- MyFeaturePresentationModule.kt
-    +-- mappers/
-    |   \-- MyFeatureUiMapper.kt
-    +-- model/
-    |   \-- MyFeatureUiModel.kt
-    +-- MyFeatureAction.kt
-    +-- MyFeatureEvent.kt
-    +-- MyFeatureRoute.kt
-    +-- MyFeatureScreen.kt
-    +-- MyFeatureState.kt
-    \-- MyFeatureViewModel.kt
-        </pre>
+        <p>For a feature named "MyFeature", you get this entire, compilable structure instantly.</p>
 
-        <h2>Fully Customizable</h2>
+       <h2>Fully Customizable</h2>
         <p>A simple dialog lets you configure the generation process:</p>
         <ul>
+            <li><b>Target Platform:</b> Instantly scaffold for Native Android or Kotlin Multiplatform (KMM).</li>
             <li><b>Dependency Injection:</b> Choose between <b>Hilt</b> and <b>Koin</b>.</li>
-            <li><b>Navigation Style:</b> Select between a standard setup or an advanced style with improved backstack handling (Nav3-style).</li>
+            <li><b>Navigation Style:</b> Select your preferred navigation setup (Nav2 or Nav3).</li>
         </ul>
 
         <h2>How to Use</h2>

@@ -2,8 +2,8 @@ ${nav3Import}
 import kotlinx.serialization.Serializable
 
 /**
- * Definisce la rotta di navigazione per la schermata ${featureName}.
- * Utilizzato da una libreria di navigazione type-safe.
+ * Defines the navigation route for the ${featureName} screen.
+ * Used by a type-safe navigation library.
  */
 @Serializable
 ${routeDeclaration} ${featureName}Route ${nav3Inheritance}

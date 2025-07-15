@@ -2,12 +2,12 @@ import ${rootPackageName}.${featureNameLowerCase}.domain.model.${featureName}
 import ${rootPackageName}.${featureNameLowerCase}.presentation.model.${featureName}UiModel
 
 /**
- * Mappa un oggetto ${featureName} (Domain) a un oggetto ${featureName}UiModel (Presentation).
+ * Maps a ${featureName} (Domain) object to a ${featureName}UiModel (Presentation) object.
  */
 fun ${featureName}.toUiModel(): ${featureName}UiModel {
     return ${featureName}UiModel(
         id = this.id,
-        title = "Title: ${this.data}", // Esempio di trasformazione
+        title = "Title: ${this.data}", // Example of transformation
         description = "Description for item with id ${this.id}"
     )
 }

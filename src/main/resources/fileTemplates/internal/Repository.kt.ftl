@@ -1,15 +1,15 @@
 import ${rootPackageName}.${featureNameLowerCase}.domain.model.${featureName}
 
 /**
- * Interfaccia che definisce il contratto per il repository della feature ${featureName}.
+ * Interface defining the contract for the ${featureName} feature's repository.
  */
 interface ${featureName}Repository {
 
     /**
-     * Recupera i dati per la feature ${featureName}.
+     * Retrieves data for the ${featureName} feature.
      *
-     * @return Un oggetto Result contenente il modello di dominio ${featureName} in caso di successo,
-     * o un'eccezione in caso di fallimento.
+     * @return A Result object containing the ${featureName} domain model on success,
+     * or an exception on failure.
      */
     suspend fun get${featureName}Data(): Result<${featureName}>
 }

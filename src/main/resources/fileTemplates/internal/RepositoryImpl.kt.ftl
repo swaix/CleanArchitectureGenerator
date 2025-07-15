@@ -4,13 +4,13 @@ import ${rootPackageName}.${featureNameLowerCase}.domain.repository.${featureNam
 ${injectImport}
 
 /**
- * Implementazione concreta del repository per la feature ${featureName}.
+ * Concrete implementation of the repository for the ${featureName} feature.
  */
 class Default${featureName}Repository ${injectAnnotation} constructor() : ${featureName}Repository {
 
     override suspend fun get${featureName}Data(): Result<${featureName}> {
         return try {
-            val domainModel = ${featureName}(id = "1", data = "Dati di esempio dal repository")
+            val domainModel = ${featureName}(id = "1", data = "Sample data from repository")
             Result.success(domainModel)
         } catch (e: Exception) {
             Result.failure(e)

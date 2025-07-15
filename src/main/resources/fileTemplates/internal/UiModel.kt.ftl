@@ -1,6 +1,6 @@
 /**
- * Rappresenta il modello di UI per un singolo item della feature ${featureName}.
- * Questa classe è ottimizzata per la visualizzazione nel Presentation Layer.
+ * Represents the UI model for a single item in the ${featureName} feature.
+ * This class is optimized for display in the Presentation Layer.
  */
 data class ${featureName}UiModel(
     val id: String,

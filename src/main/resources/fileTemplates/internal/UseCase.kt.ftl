@@ -3,14 +3,14 @@ import ${rootPackageName}.${featureNameLowerCase}.domain.repository.${featureNam
 ${injectImport}
 
 /**
- * Use case che incapsula la logica di business per ottenere i dati della feature ${featureName}.
+ * Use case that encapsulates the business logic for fetching the ${featureName} feature data.
  */
 class Get${featureName}DataUseCase ${injectAnnotation} constructor(
     private val repository: ${featureName}Repository
 ) {
 
     /**
-     * Esegue lo use case.
+     * Executes the use case.
      */
     suspend operator fun invoke(): Result<${featureName}> {
         return repository.get${featureName}Data()
